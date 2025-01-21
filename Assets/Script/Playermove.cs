@@ -52,7 +52,7 @@ public class Playermove : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
             // Set jump animation parameter
-            //animator.SetTrigger("Jump");
+            animator.SetTrigger("Jump");
         }
 
         velocity.y += gravity * Time.deltaTime;
