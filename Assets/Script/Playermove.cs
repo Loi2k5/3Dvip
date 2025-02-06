@@ -14,14 +14,15 @@ public class Playermove : MonoBehaviour
     float turnSmoothVelocity;
 
     Vector3 velocity;
-    bool isGrounded;
+    bool canJump = true;
+    float jumpCooldown = 1.1f;
+    float nextJumpTime = 0f;
 
     public Animator animator;
 
     void Update()
     {
-        isGrounded = controller.isGrounded;
-        if (isGrounded && velocity.y < 0)
+        if (controller.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
@@ -32,6 +33,7 @@ public class Playermove : MonoBehaviour
 
         if (direction.magnitude >= 0.1f)
         {
+            // Tính toán góc đích để xoay
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
@@ -39,19 +41,20 @@ public class Playermove : MonoBehaviour
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             controller.Move(moveDir.normalized * speed * Time.deltaTime);
 
-            // Set animation parameter
-            animator.SetFloat("speed", 0.5f); // Hoặc theo tốc độ tính toán của bạn
+            // Thiết lập tham số animation
+            animator.SetFloat("speed", 0.5f);
         }
         else
         {
             animator.SetFloat("speed", 0f);
         }
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && Time.time >= nextJumpTime)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            nextJumpTime = Time.time + jumpCooldown;
 
-            // Set jump animation parameter
+            // Thiết lập tham số nhảy của animation
             animator.SetTrigger("Jump");
         }
 
