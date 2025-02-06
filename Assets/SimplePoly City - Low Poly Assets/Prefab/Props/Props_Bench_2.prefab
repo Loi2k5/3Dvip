@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2300000}
   - component: {fileID: -7395592093201835689}
   - component: {fileID: 1633149018054165774}
+  - component: {fileID: -3154115763845151037}
   m_Layer: 0
   m_Name: Props_Bench_2
   m_TagString: Untagged
@@ -102,7 +103,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 4, y: 1.7802231, z: 0.2245701}
   m_Center: {x: 0, y: 0.8915299, z: -0.62487614}
@@ -127,3 +128,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4, y: 0.5810834, z: 1.1694379}
   m_Center: {x: 0, y: 0.29196006, z: 0.07812011}
+--- !u!64 &-3154115763845151037
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: fb901750ec5d32f46ad8179f6fb99b8a, type: 3}

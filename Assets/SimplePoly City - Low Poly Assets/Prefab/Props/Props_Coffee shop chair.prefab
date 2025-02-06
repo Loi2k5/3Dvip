@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7254849656503005798}
   - component: {fileID: 6287259057204761761}
   - component: {fileID: 1780712648805511411}
+  - component: {fileID: -4650576319438927931}
   m_Layer: 0
   m_Name: Props_Coffee shop chair
   m_TagString: Untagged
@@ -103,7 +104,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.93206054, y: 1.374184, z: 0.7567979}
   m_Center: {x: 0.7654314, y: 0.6869475, z: -0.002763033}
@@ -149,3 +150,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.7925904, y: 1.2886655, z: 0.889403}
   m_Center: {x: -0.7295362, y: 0.6441883, z: 0.024121463}
+--- !u!64 &-4650576319438927931
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 23816e0039304184c9d9f74b067ca30e, type: 3}
