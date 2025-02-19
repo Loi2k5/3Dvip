@@ -9183,11 +9183,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 0ee37198b24b2164fbbccfbe92fe5d35, type: 3}
   m_PrefabInstance: {fileID: 362947316}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &363617901 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2251931901196960976, guid: db3c50e77180ff3498c94dbf7de00bcc, type: 3}
-  m_PrefabInstance: {fileID: 632762152}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &365452736
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41487,7 +41482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cade6089855126d42a0e8b0dbc667572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 363617901}
+  player: {fileID: 632762153}
   followDistance: 7
   followHeight: 14.48
   rotationSpeed: 3
