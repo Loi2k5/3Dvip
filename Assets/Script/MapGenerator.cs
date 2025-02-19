@@ -7,6 +7,7 @@ public class MapGenerator : MonoBehaviour
     public GameObject[] mapChunks; // Danh sách các Prefab cho map chunks
     public float chunkSize = 50f; // Kích thước mỗi chunk
     public int renderDistance = 3; // Số chunks giữ lại xung quanh nhân vật
+    public float heightOffset = 2f; // Độ cao bổ sung cho vị trí xuất hiện chunk
 
     private Dictionary<Vector2, GameObject> activeChunks = new Dictionary<Vector2, GameObject>();
     private Vector2 currentChunkPosition;
@@ -66,8 +67,8 @@ public class MapGenerator : MonoBehaviour
         // Chọn ngẫu nhiên một Prefab từ danh sách
         GameObject chunkPrefab = mapChunks[Random.Range(0, mapChunks.Length)];
 
-        // Tính vị trí của chunk
-        Vector3 position = new Vector3(chunkPosition.x * chunkSize, 0, chunkPosition.y * chunkSize);
+        // Tính vị trí của chunk, cộng thêm heightOffset vào vị trí y
+        Vector3 position = new Vector3(chunkPosition.x * chunkSize, heightOffset, chunkPosition.y * chunkSize);
 
         // Tạo chunk và thêm vào danh sách
         GameObject newChunk = Instantiate(chunkPrefab, position, Quaternion.identity);

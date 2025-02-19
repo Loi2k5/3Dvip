@@ -29,6 +29,8 @@ public class Cameravs : MonoBehaviour
 
     void Update()
     {
+
+
         // Lấy input từ chuột
         float horizontalInput = Input.GetAxis("Mouse X");
         float verticalInput = Input.GetAxis("Mouse Y");
@@ -62,11 +64,13 @@ public class Cameravs : MonoBehaviour
         // Camera luôn nhìn vào nhân vật (vị trí háng hoặc tâm)
         transform.LookAt(player.position + Vector3.up * 1.0f);
 
-        // Chuyển đổi trạng thái con trỏ chuột
+        // Kiểm tra và chuyển đổi trạng thái con trỏ chuột
         if (Input.GetKeyDown(KeyCode.L))
         {
             Cursor.lockState = Cursor.visible ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !Cursor.visible;
         }
-        Cursor.visible = !Cursor.visible;
+
     }
+
 }

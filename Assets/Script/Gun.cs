@@ -7,6 +7,13 @@ public class ShootBullet : MonoBehaviour
     public float bulletSpeed = 60f;  // Tốc độ đạn
     public float maxDistance = 100f; // Tầm xa tối đa của đạn
 
+    public Transform player;        // Nhân vật
+
+    void Start()
+    {
+        player = transform;          // Lấy Transform của nhân vật
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))  // Kiểm tra nếu nhấp chuột trái
@@ -17,9 +24,14 @@ public class ShootBullet : MonoBehaviour
 
     void Shoot()
     {
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
+        // Tạo đạn tại vị trí bulletSpawn và theo hướng quay của nhân vật
+        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, player.rotation);
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
-        rb.velocity = bulletSpawn.forward * bulletSpeed;  // Đẩy đạn về phía trước
-        Destroy(bullet, maxDistance / bulletSpeed);  // Tự hủy đạn sau khi vượt quá tầm xa
+
+        // Thiết lập vận tốc đạn theo hướng quay của nhân vật
+        rb.velocity = player.forward * bulletSpeed;
+
+        // Tự hủy đạn sau khi vượt quá tầm xa
+        Destroy(bullet, maxDistance / bulletSpeed);
     }
 }
