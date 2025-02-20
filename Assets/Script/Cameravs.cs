@@ -30,6 +30,7 @@ public class Cameravs : MonoBehaviour
     void Update()
     {
 
+
         // Lấy input từ chuột
         float horizontalInput = Input.GetAxis("Mouse X");
         float verticalInput = Input.GetAxis("Mouse Y");
