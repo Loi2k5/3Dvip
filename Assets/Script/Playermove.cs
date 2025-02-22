@@ -8,7 +8,7 @@ public class Playermove : MonoBehaviour
     public float speed = 6f;
     public float jumpHeight = 2f;
     public float gravity = -9.81f;
-    public float turnSmoothTime = 0.1f;
+    public float turnSmoothTime = 0.05f;
     float turnSmoothVelocity;
 
     Vector3 velocity;
