@@ -1,82 +1,159 @@
-
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Monster : MonoBehaviour
 {
-    public float moveSpeed = 3f;
-    public int health = 100;
-    public int attackDamage = 20;
-    public float attackRange = 1.5f;
-    public float attackCooldown = 1f; // Seconds between attacks
+    public NavMeshAgent navMeshAgent;
+    public Transform target; // Mục tiêu
 
-    private Transform target; // The target to move towards and attack
+    public float searchRadius = 10f; // Bán kính tìm kiếm mục tiêu
+    public Vector3 originalPosition; // Vị trí ban đầu
+    public float maxDistance = 50f; // Khoảng cách tối đa từ vị trí ban đầu
+    public float maxHP = 100f;
+    public float currentHP;
+
+    public Animator animator; // Khai báo component Animator
+
+    // State machine
+    public enum CharacterState
+    {
+        Idle,
+        Chase,
+        Attack,
+        Die
+    }
+    public CharacterState currentState; // Trạng thái hiện tại
+
+    public float attackRange = 2f; // Phạm vi tấn công
+    public float attackCooldown = 1f; // Thời gian chờ giữa các lần tấn công
     private float lastAttackTime;
 
     void Start()
     {
-        // Find the player or other target (replace "Player" with your target's tag)
-        target = GameObject.FindGameObjectWithTag("Player")?.transform;
-        lastAttackTime = -attackCooldown; // Allow immediate attack on start
+        originalPosition = transform.position;
+        currentHP = maxHP;
+        lastAttackTime = -attackCooldown; // Cho phép tấn công ngay khi bắt đầu
+        ChangeState(CharacterState.Idle);
     }
 
     void Update()
     {
-        if (target != null)
+        if (currentState == CharacterState.Die)
         {
-            MoveTowardsTarget();
-            AttackTarget();
+            return;
+        }
+
+        float distanceToOriginal = Vector3.Distance(originalPosition, transform.position);
+        float distanceToTarget = Vector3.Distance(target.position, transform.position);
+
+        switch (currentState)
+        {
+            case CharacterState.Idle:
+                if (distanceToTarget <= searchRadius && distanceToOriginal <= maxDistance)
+                {
+                    ChangeState(CharacterState.Chase);
+                }
+                break;
+
+            case CharacterState.Chase:
+                navMeshAgent.SetDestination(target.position);
+                animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
+
+                if (distanceToTarget <= attackRange)
+                {
+                    ChangeState(CharacterState.Attack);
+                }
+
+                if (distanceToTarget > searchRadius || distanceToOriginal > maxDistance)
+                {
+                    ChangeState(CharacterState.Idle);
+                }
+                break;
+
+            case CharacterState.Attack:
+                animator.SetFloat("Speed", 0); // Dừng di chuyển khi tấn công
+                if (Time.time - lastAttackTime >= attackCooldown)
+                {
+                    animator.SetTrigger("Attack");
+                    lastAttackTime = Time.time;
+                    // Gọi hàm tấn công ở đây (ví dụ: gây sát thương cho mục tiêu)
+                    Attack();
+                }
+
+                if (distanceToTarget > attackRange)
+                {
+                    ChangeState(CharacterState.Chase);
+                }
+                break;
+        }
+
+        if (currentState == CharacterState.Idle)
+        {
+            navMeshAgent.SetDestination(originalPosition);
+            animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
+
+            if (distanceToOriginal < 1f)
+            {
+                animator.SetFloat("Speed", 0);
+            }
+        }
+
+        // Cập nhật giá trị Current HP nếu bị tấn công
+        if (currentHP < maxHP && currentState != CharacterState.Die)
+        {
+            currentHP = Mathf.Min(maxHP, currentHP + Time.deltaTime * 5); // Tự hồi máu chậm
         }
     }
 
-    void MoveTowardsTarget()
+    private void ChangeState(CharacterState newState)
     {
-        // Calculate the direction to the target
-        Vector3 direction = (target.position - transform.position).normalized;
+        currentState = newState;
 
-        // Move the monster towards the target
-        transform.Translate(direction * moveSpeed * Time.deltaTime);
-    }
-
-    void AttackTarget()
-    {
-        float distanceToTarget = Vector3.Distance(transform.position, target.position);
-
-        if (distanceToTarget <= attackRange && Time.time - lastAttackTime >= attackCooldown)
+        switch (newState)
         {
-            // Perform the attack (e.g., deal damage to the target)
-            Debug.Log("Monster attacked the target for " + attackDamage + " damage!"); // Replace with actual damage application
+            case CharacterState.Idle:
+                break;
 
-            // Example: If target has a Health component, you might call:
-            // target.GetComponent<Health>().TakeDamage(attackDamage);
+            case CharacterState.Chase:
+                break;
 
-            lastAttackTime = Time.time;
+            case CharacterState.Attack:
+                break;
+
+            case CharacterState.Die:
+                animator.SetTrigger("Die");
+                Destroy(gameObject, 6f);
+                GetComponent<Collider>().enabled = false;
+                break;
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-        health -= damage;
-        Debug.Log("Monster took " + damage + " damage! Health: " + health);
+        currentHP -= damage;
+        currentHP = Mathf.Max(0, currentHP);
 
-        if (health <= 0)
+        if (currentHP <= 0)
         {
-            Die();
+            ChangeState(CharacterState.Die);
         }
     }
 
-    void Die()
+    private void Attack()
     {
-        Debug.Log("Monster died!");
-        Destroy(gameObject); // Destroy the monster GameObject
-        // You can add more death effects here (e.g., animations, sound, loot)
+        // Thực hiện logic tấn công ở đây (ví dụ: gây sát thương cho mục tiêu)
+        Debug.Log("Enemy attacked!");
+        // Ví dụ: target.GetComponent<Health>().TakeDamage(damage);
     }
 
-    // Optional: Draw attack range in the Scene view for debugging
+    // Optional: Draw search radius and attack range in the Scene view for debugging
     void OnDrawGizmosSelected()
     {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, searchRadius);
+
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
