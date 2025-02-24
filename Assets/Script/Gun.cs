@@ -8,10 +8,17 @@ public class ShootBullet : MonoBehaviour
     public float maxDistance = 100f; // Tầm xa tối đa của đạn
 
     public Transform player;        // Nhân vật
+    public AudioSource audioSource; // Nguồn phát âm thanh
+    public AudioClip shootSound;    // Âm thanh bắn súng
 
     void Start()
     {
-        player = transform;          // Lấy Transform của nhân vật
+        player = transform; // Lấy Transform của nhân vật
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>(); // Thêm AudioSource nếu chưa có
+        }
     }
 
     void Update()
@@ -30,6 +37,12 @@ public class ShootBullet : MonoBehaviour
 
         // Thiết lập vận tốc đạn theo hướng quay của nhân vật
         rb.velocity = player.forward * bulletSpeed;
+
+        // Phát âm thanh bắn súng
+        if (shootSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(shootSound);
+        }
 
         // Tự hủy đạn sau khi vượt quá tầm xa
         Destroy(bullet, maxDistance / bulletSpeed);
