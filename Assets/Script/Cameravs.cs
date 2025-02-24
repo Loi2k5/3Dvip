@@ -65,7 +65,7 @@ public class Cameravs : MonoBehaviour
         transform.LookAt(player.position + Vector3.up * 1.0f);
 
         // Kiểm tra và chuyển đổi trạng thái con trỏ chuột
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             Cursor.lockState = Cursor.visible ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = !Cursor.visible;
