@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 929373709
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: danbundle
+      Dependencies: {}
