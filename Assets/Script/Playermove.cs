@@ -4,6 +4,7 @@ public class Playermove : MonoBehaviour
 {
     public CharacterController controller;
     public Transform cameraTransform;
+    public PlayerHealth playerHealth; // Tham chiếu đến script PlayerHealth
 
     public float speed = 6f;
     public float jumpHeight = 2f;
@@ -19,7 +20,6 @@ public class Playermove : MonoBehaviour
 
     void Update()
     {
-
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
@@ -54,5 +54,11 @@ public class Playermove : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    // Gọi hàm này khi nhân vật bị đánh
+    public void TakeDamage(float damageAmount)
+    {
+        playerHealth.TakeDamage(damageAmount);
     }
 }

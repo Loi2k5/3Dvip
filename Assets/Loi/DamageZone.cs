@@ -9,49 +9,62 @@ public class DamageZone : MonoBehaviour
     public string targetTag;
 
     public List<Collider> colliderTargets = new List<Collider>();
-    // Start is called before the first frame update
+
+    private bool hasAttacked = false; // biến để xác định đã tấn công hay chưa
+
     void Start()
     {
         damageCollider.enabled = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
-
-    }
-    public void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag(targetTag) && !colliderTargets.Contains(other))
+        // Reset trạng thái tấn công nếu điều kiện đã được thiết lập
+        if (!damageCollider.enabled)
         {
-            colliderTargets.Add(other);
-            var go = other.GetComponent<Heath>();
-            if (go != null)
-            {
-                go.TakeDamege(damageAmount);
-            }
+            hasAttacked = false;
         }
     }
+
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag(targetTag) && !colliderTargets.Contains(other))
+        if (other.gameObject.CompareTag(targetTag) && !colliderTargets.Contains(other) && !hasAttacked)
         {
             colliderTargets.Add(other);
-            var go = other.GetComponent<Heath>();
-            if (go != null)
+            var player = other.GetComponent<Playermove>();
+            if (player != null)
             {
-                go.TakeDamege(damageAmount);
+                player.TakeDamage(damageAmount);
+                Debug.Log($"Damaging player: {player.name}");
+                hasAttacked = true; // đặt trạng thái tấn công thành true
             }
         }
     }
+
     public void BeginAttack()
     {
         colliderTargets.Clear();
         damageCollider.enabled = true;
     }
+
     public void EndAttack()
     {
         colliderTargets.Clear();
         damageCollider.enabled = false;
+    }
+
+    // Phương thức này sẽ được gọi bởi sự kiện animation
+    public void DoDamage()
+    {
+        foreach (var target in colliderTargets)
+        {
+            var player = target.GetComponent<Playermove>();
+            if (player != null)
+            {
+                player.TakeDamage(damageAmount);
+                Debug.Log($"Damaging player: {player.name}");
+            }
+        }
+        hasAttacked = true; // Đặt trạng thái tấn công thành true
     }
 }

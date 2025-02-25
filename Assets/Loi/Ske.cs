@@ -12,7 +12,6 @@ public class Ske : MonoBehaviour
     public Vector3 originalePosition; // vị trí ban đầu
     public float maxDistance = 50f; // khoảng cách tối đa
 
-
     public Animator animator; // khai báo component
     public DamageZone damageZone;
     public Heath heath;
@@ -26,12 +25,10 @@ public class Ske : MonoBehaviour
     }
     public CharacterState currentState; // trạng thái hiện tại
 
-
     void Start()
     {
         originalePosition = transform.position;
         navMeshAgent.SetDestination(target.position);
-
     }
 
     void Update()
@@ -40,8 +37,12 @@ public class Ske : MonoBehaviour
         {
             ChangeState(CharacterState.Die);
         }
-        //Wander();
-        // xoay huong nhin ve muc tieu
+
+        if (currentState == CharacterState.Die)
+        {
+            return;
+        }
+
         if (target != null)
         {
             var lookPos = target.position - transform.position;
@@ -49,10 +50,7 @@ public class Ske : MonoBehaviour
             var rotation = Quaternion.LookRotation(lookPos);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 5);
         }
-        if (currentState == CharacterState.Die)
-        {
-            return;
-        }
+
         // khoảng cách từ vị trí hiện tại đến vị trí ban đầu
         var distanceToOriginal = Vector3.Distance(originalePosition, transform.position);
         // khoảng cách từ vị trí hiện tại đến mục tiêu
@@ -69,9 +67,13 @@ public class Ske : MonoBehaviour
                 // tấn công
                 ChangeState(CharacterState.Attack);
             }
+            else if (currentState == CharacterState.Attack && distance >= 2f)
+            {
+                // kết thúc tấn công khi mục tiêu rời khỏi phạm vi
+                ChangeState(CharacterState.Normal);
+            }
         }
-
-        if (distance > radius || distanceToOriginal > maxDistance)
+        else
         {
             // quay về vị trí ban đầu
             navMeshAgent.SetDestination(originalePosition);
@@ -82,10 +84,8 @@ public class Ske : MonoBehaviour
             if (distance < 1f)
             {
                 animator.SetFloat("Speed", 0);
+                ChangeState(CharacterState.Normal);
             }
-
-            // bình thường
-            ChangeState(CharacterState.Normal);
         }
     }
 
@@ -96,6 +96,7 @@ public class Ske : MonoBehaviour
         switch (currentState)
         {
             case CharacterState.Normal:
+                damageZone.EndAttack();
                 break;
             case CharacterState.Attack:
                 break;
@@ -120,24 +121,4 @@ public class Ske : MonoBehaviour
         // update current state
         currentState = newState;
     }
-    /*public override void TakeDamege(float damage)
-    {
-        base.TakeDamege(damage); 
-        if (currentHP <=0)
-        {
-            ChangeState(CharacterState.Die);
-        }    
-    }  */
-    //di lang thang trong ban do xung quang vi tri ban dau
-    public void Wander()
-    {
-        var randomDirection = Random.insideUnitSphere * radius;
-        randomDirection += originalePosition;
-        NavMeshHit hit;
-        NavMesh.SamplePosition(randomDirection, out hit, radius, 1);
-        var finalPosition = hit.position;
-        navMeshAgent.SetDestination(finalPosition);
-        animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
-    }
-
 }

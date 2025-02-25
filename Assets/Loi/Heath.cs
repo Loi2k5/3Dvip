@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,19 +6,28 @@ public class Heath : MonoBehaviour
 {
     public float maxHP;
     public float currentHP;
-    public void Start()
+
+    void Start()
     {
         currentHP = maxHP;
     }
-    public virtual void TakeDamege(float damage)
+
+    public virtual void TakeDamage(float damage)
     {
         currentHP -= damage;
         currentHP = Mathf.Max(0, currentHP);
+        Debug.Log($"{gameObject.name} took {damage} damage, remaining health: {currentHP}");
 
+        if (currentHP <= 0)
+        {
+            Die();
+        }
     }
 
-    internal void TakeDamage(int damageAmount)
+    void Die()
     {
-        throw new NotImplementedException();
+        Debug.Log($"{gameObject.name} has died.");
+        // Thực hiện các hành động khi đối tượng chết, ví dụ như hủy đối tượng
+        Destroy(gameObject);
     }
 }
