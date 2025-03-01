@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class Ske : MonoBehaviour
 {
     public NavMeshAgent navMeshAgent;
-    public Transform target; // mục tiêu
+    public string targetTag = "Player"; // tag của mục tiêu
 
     public float radius = 10f; // bán kính tìm kiếm mục tiêu
     public Vector3 originalePosition; // vị trí ban đầu
@@ -15,6 +15,8 @@ public class Ske : MonoBehaviour
     public Animator animator; // khai báo component
     public DamageZone damageZone;
     public Heath heath;
+
+    private Transform target; // mục tiêu
 
     // state machine
     public enum CharacterState
@@ -28,7 +30,7 @@ public class Ske : MonoBehaviour
     void Start()
     {
         originalePosition = transform.position;
-        navMeshAgent.SetDestination(target.position);
+        FindTarget();
     }
 
     void Update()
@@ -49,43 +51,57 @@ public class Ske : MonoBehaviour
             lookPos.y = 0;
             var rotation = Quaternion.LookRotation(lookPos);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 5);
+
+            // khoảng cách từ vị trí hiện tại đến vị trí ban đầu
+            var distanceToOriginal = Vector3.Distance(originalePosition, transform.position);
+            // khoảng cách từ vị trí hiện tại đến mục tiêu
+            var distance = Vector3.Distance(target.position, transform.position);
+            if (distance <= radius && distanceToOriginal <= maxDistance)
+            {
+                // di chuyển đến mục tiêu
+                navMeshAgent.SetDestination(target.position);
+                animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
+
+                distance = Vector3.Distance(target.position, transform.position);
+                if (distance < 2f)
+                {
+                    // tấn công
+                    ChangeState(CharacterState.Attack);
+                }
+                else if (currentState == CharacterState.Attack && distance >= 2f)
+                {
+                    // kết thúc tấn công khi mục tiêu rời khỏi phạm vi
+                    ChangeState(CharacterState.Normal);
+                }
+            }
+            else
+            {
+                // quay về vị trí ban đầu
+                navMeshAgent.SetDestination(originalePosition);
+                animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
+
+                // chuyển sang trạng thái đứng yên
+                distance = Vector3.Distance(originalePosition, transform.position);
+                if (distance < 1f)
+                {
+                    animator.SetFloat("Speed", 0);
+                    ChangeState(CharacterState.Normal);
+                }
+            }
         }
+    }
 
-        // khoảng cách từ vị trí hiện tại đến vị trí ban đầu
-        var distanceToOriginal = Vector3.Distance(originalePosition, transform.position);
-        // khoảng cách từ vị trí hiện tại đến mục tiêu
-        var distance = Vector3.Distance(target.position, transform.position);
-        if (distance <= radius && distanceToOriginal <= maxDistance)
+    // tìm mục tiêu theo tag
+    private void FindTarget()
+    {
+        GameObject targetObject = GameObject.FindWithTag(targetTag);
+        if (targetObject != null)
         {
-            // di chuyển đến mục tiêu
-            navMeshAgent.SetDestination(target.position);
-            animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
-
-            distance = Vector3.Distance(target.position, transform.position);
-            if (distance < 2f)
-            {
-                // tấn công
-                ChangeState(CharacterState.Attack);
-            }
-            else if (currentState == CharacterState.Attack && distance >= 2f)
-            {
-                // kết thúc tấn công khi mục tiêu rời khỏi phạm vi
-                ChangeState(CharacterState.Normal);
-            }
+            target = targetObject.transform;
         }
         else
         {
-            // quay về vị trí ban đầu
-            navMeshAgent.SetDestination(originalePosition);
-            animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
-
-            // chuyển sang trạng thái đứng yên
-            distance = Vector3.Distance(originalePosition, transform.position);
-            if (distance < 1f)
-            {
-                animator.SetFloat("Speed", 0);
-                ChangeState(CharacterState.Normal);
-            }
+            Debug.LogError("Target with tag " + targetTag + " not found!");
         }
     }
 

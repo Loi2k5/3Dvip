@@ -233,7 +233,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   navMeshAgent: {fileID: 5594363774143164453}
-  target: {fileID: 0}
+  targetTag: Player
   radius: 10
   originalePosition: {x: 0, y: 0, z: 0}
   maxDistance: 60
