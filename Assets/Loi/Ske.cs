@@ -9,7 +9,7 @@ public class Ske : MonoBehaviour
     public string targetTag = "Player"; // tag của mục tiêu
 
     public float radius = 10f; // bán kính tìm kiếm mục tiêu
-    public Vector3 originalePosition; // vị trí ban đầu
+    public Vector3 originalPosition; // vị trí ban đầu
     public float maxDistance = 50f; // khoảng cách tối đa
 
     public Animator animator; // khai báo component
@@ -17,6 +17,8 @@ public class Ske : MonoBehaviour
     public Heath heath;
 
     private Transform target; // mục tiêu
+
+    public float moveSpeed = 3.5f; // tốc độ di chuyển của quái
 
     // state machine
     public enum CharacterState
@@ -29,8 +31,9 @@ public class Ske : MonoBehaviour
 
     void Start()
     {
-        originalePosition = transform.position;
+        originalPosition = transform.position;
         FindTarget();
+        navMeshAgent.speed = moveSpeed; // đặt tốc độ di chuyển của NavMeshAgent
     }
 
     void Update()
@@ -53,7 +56,7 @@ public class Ske : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 5);
 
             // khoảng cách từ vị trí hiện tại đến vị trí ban đầu
-            var distanceToOriginal = Vector3.Distance(originalePosition, transform.position);
+            var distanceToOriginal = Vector3.Distance(originalPosition, transform.position);
             // khoảng cách từ vị trí hiện tại đến mục tiêu
             var distance = Vector3.Distance(target.position, transform.position);
             if (distance <= radius && distanceToOriginal <= maxDistance)
@@ -77,11 +80,11 @@ public class Ske : MonoBehaviour
             else
             {
                 // quay về vị trí ban đầu
-                navMeshAgent.SetDestination(originalePosition);
+                navMeshAgent.SetDestination(originalPosition);
                 animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
 
                 // chuyển sang trạng thái đứng yên
-                distance = Vector3.Distance(originalePosition, transform.position);
+                distance = Vector3.Distance(originalPosition, transform.position);
                 if (distance < 1f)
                 {
                     animator.SetFloat("Speed", 0);

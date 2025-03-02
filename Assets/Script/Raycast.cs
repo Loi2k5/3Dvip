@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;  // Import the UI namespace
 
 public class Raycast : MonoBehaviour
 {
@@ -12,6 +13,10 @@ public class Raycast : MonoBehaviour
     TextMeshProUGUI destroyedCountText;
     [SerializeField]
     TextMeshProUGUI highScoreText;
+    [SerializeField]
+    TextMeshProUGUI notificationText;  // UI text for notifications
+    [SerializeField]
+    GameObject exitButton;  // UI button for exiting the game
 
     private int destroyedCount = 0;
     private int highScore = 0;
@@ -24,6 +29,9 @@ public class Raycast : MonoBehaviour
         LoadHighScore();  // Tải điểm cao nhất từ lần chơi trước
         UpdateDestroyedCountText();
         UpdateHighScoreText();
+        notificationText.text = "";  // Initialize the notification text to be empty
+        exitButton.SetActive(false);  // Hide the exit button at the start
+        exitButton.GetComponent<Button>().onClick.AddListener(ExitGame);  // Add listener to the exit button
     }
 
     void Update()
@@ -36,6 +44,11 @@ public class Raycast : MonoBehaviour
                 Destroy(hit.transform.gameObject);
                 destroyedCount++;
                 UpdateDestroyedCountText();
+
+                if (destroyedCount >= 1)
+                {
+                    NotifyAndShowExitButton();  // Thông báo và hiện nút thoát nếu đạt điểm số 10
+                }
 
                 if (destroyedCount > highScore)
                 {
@@ -102,5 +115,20 @@ public class Raycast : MonoBehaviour
     void LoadDestroyedCount()
     {
         destroyedCount = PlayerPrefs.GetInt("DestroyedCount", 0);  // Tải số lượng đối tượng bị phá hủy từ PlayerPrefs
+    }
+
+    void NotifyAndShowExitButton()
+    {
+        // Thông báo và hiển thị nút thoát
+        notificationText.text = "You have reached the score of 10! Click exit to leave the game.";
+        Debug.Log("You have reached the score of 10! Click exit to leave the game.");
+        exitButton.SetActive(true);  // Hiển thị nút thoát
+        Time.timeScale = 0;  // Pause the game
+    }
+
+    void ExitGame()
+    {
+        // Thoát khỏi game
+        Application.Quit();  // Thoát khỏi game
     }
 }
