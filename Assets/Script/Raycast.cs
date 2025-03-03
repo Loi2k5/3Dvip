@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;  // Import the UI namespace
+using UnityEngine.UI;
 
 public class Raycast : MonoBehaviour
 {
@@ -14,24 +14,29 @@ public class Raycast : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI highScoreText;
     [SerializeField]
-    TextMeshProUGUI notificationText;  // UI text for notifications
+    TextMeshProUGUI notificationText;
     [SerializeField]
-    GameObject exitButton;  // UI button for exiting the game
+    GameObject exitButton;
+    [SerializeField]
+    GameObject continueButton;
 
     private int destroyedCount = 0;
     private int highScore = 0;
-    private float cooldownTime = 1f;  // Thời gian (giây) giữa các lần kiểm tra Raycast
+    private float cooldownTime = 1f;
     private float nextRaycastTime = 0f;
+    private bool hasShownWinScreen = false;
 
     void Start()
     {
-        ResetDestroyedCount();  // Reset điểm số về 0 khi bắt đầu game mới
-        LoadHighScore();  // Tải điểm cao nhất từ lần chơi trước
+        ResetDestroyedCount();
+        LoadHighScore();
         UpdateDestroyedCountText();
         UpdateHighScoreText();
-        notificationText.text = "";  // Initialize the notification text to be empty
-        exitButton.SetActive(false);  // Hide the exit button at the start
-        exitButton.GetComponent<Button>().onClick.AddListener(ExitGame);  // Add listener to the exit button
+        notificationText.text = "";
+        exitButton.SetActive(false);
+        continueButton.SetActive(false);
+        exitButton.GetComponent<Button>().onClick.AddListener(ExitGame);
+        continueButton.GetComponent<Button>().onClick.AddListener(ContinueGame);
     }
 
     void Update()
@@ -45,15 +50,16 @@ public class Raycast : MonoBehaviour
                 destroyedCount++;
                 UpdateDestroyedCountText();
 
-                if (destroyedCount >= 1)
+                if (destroyedCount >= 1 && !hasShownWinScreen)
                 {
-                    NotifyAndShowExitButton();  // Thông báo và hiện nút thoát nếu đạt điểm số 10
+                    NotifyAndShowButtons();
+                    hasShownWinScreen = true;
                 }
 
                 if (destroyedCount > highScore)
                 {
                     highScore = destroyedCount;
-                    SaveHighScore();  // Lưu điểm cao nhất nếu đạt được điểm mới
+                    SaveHighScore();
                     UpdateHighScoreText();
                 }
 
@@ -65,7 +71,6 @@ public class Raycast : MonoBehaviour
             }
         }
 
-        // Kiểm tra phím "O" để reset điểm cao nhất
         if (Input.GetKeyDown(KeyCode.O))
         {
             ResetHighScore();
@@ -75,60 +80,62 @@ public class Raycast : MonoBehaviour
 
     void UpdateDestroyedCountText()
     {
-        destroyedCountText.text = "Loot: " + destroyedCount.ToString();  // Cập nhật văn bản hiển thị số lượng đối tượng bị phá hủy
+        destroyedCountText.text = "Loot: " + destroyedCount.ToString();
     }
 
     void UpdateHighScoreText()
     {
-        highScoreText.text = "High Score: " + highScore.ToString();  // Cập nhật văn bản hiển thị điểm cao nhất
+        highScoreText.text = "High Score: " + highScore.ToString();
     }
 
     void SaveHighScore()
     {
-        PlayerPrefs.SetInt("HighScore", highScore);  // Lưu điểm cao nhất vào PlayerPrefs
-        PlayerPrefs.Save();  // Lưu tất cả các giá trị PlayerPrefs
+        PlayerPrefs.SetInt("HighScore", highScore);
+        PlayerPrefs.Save();
     }
 
     void LoadHighScore()
     {
-        highScore = PlayerPrefs.GetInt("HighScore", 0);  // Tải điểm cao nhất từ PlayerPrefs
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
     }
 
     void ResetHighScore()
     {
-        highScore = 0;  // Reset điểm cao nhất về 0
-        SaveHighScore();  // Lưu điểm cao nhất đã reset vào PlayerPrefs
+        highScore = 0;
+        SaveHighScore();
     }
 
     void ResetDestroyedCount()
     {
-        destroyedCount = 0;  // Reset số lượng đối tượng bị phá hủy về 0
+        destroyedCount = 0;
         SaveDestroyedCount();
     }
 
     void SaveDestroyedCount()
     {
-        PlayerPrefs.SetInt("DestroyedCount", destroyedCount);  // Lưu số lượng đối tượng bị phá hủy vào PlayerPrefs
-        PlayerPrefs.Save();  // Lưu tất cả các giá trị PlayerPrefs
+        PlayerPrefs.SetInt("DestroyedCount", destroyedCount);
+        PlayerPrefs.Save();
     }
 
-    void LoadDestroyedCount()
+    void NotifyAndShowButtons()
     {
-        destroyedCount = PlayerPrefs.GetInt("DestroyedCount", 0);  // Tải số lượng đối tượng bị phá hủy từ PlayerPrefs
+        notificationText.text = "You have reached the score of 10! Click Continue to keep playing or Exit to leave.";
+        Debug.Log("You have reached the score of 10! Click Continue to keep playing or Exit to leave.");
+        exitButton.SetActive(true);
+        continueButton.SetActive(true);
+        Time.timeScale = 0;
     }
 
-    void NotifyAndShowExitButton()
+    void ContinueGame()
     {
-        // Thông báo và hiển thị nút thoát
-        notificationText.text = "You have reached the score of 10! Click exit to leave the game.";
-        Debug.Log("You have reached the score of 10! Click exit to leave the game.");
-        exitButton.SetActive(true);  // Hiển thị nút thoát
-        Time.timeScale = 0;  // Pause the game
+        notificationText.text = "";
+        exitButton.SetActive(false);
+        continueButton.SetActive(false);
+        Time.timeScale = 1;
     }
 
     void ExitGame()
     {
-        // Thoát khỏi game
-        Application.Quit();  // Thoát khỏi game
+        Application.Quit();
     }
 }
