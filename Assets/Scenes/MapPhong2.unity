@@ -60285,6 +60285,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6612967305430983482, guid: e15d4918ccd551f418930996c3f4ea5d, type: 3}
+      propertyPath: m_Range
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 6957680658839872549, guid: e15d4918ccd551f418930996c3f4ea5d, type: 3}
       propertyPath: bgmSource
       value: 
