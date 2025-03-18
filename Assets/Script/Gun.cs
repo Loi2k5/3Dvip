@@ -36,7 +36,7 @@ public class ShootBullet : MonoBehaviour
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
         // Thiết lập vận tốc đạn theo hướng quay của nhân vật
-        rb.velocity = player.forward * bulletSpeed;
+        rb.linearVelocity = player.forward * bulletSpeed;
 
         // Phát âm thanh bắn súng
         if (shootSound != null && audioSource != null)
