@@ -50,7 +50,7 @@ public class Raycast : MonoBehaviour
                 destroyedCount++;
                 UpdateDestroyedCountText();
 
-                if (destroyedCount >= 1 && !hasShownWinScreen)
+                if (destroyedCount >= 10 && !hasShownWinScreen)
                 {
                     NotifyAndShowButtons();
                     hasShownWinScreen = true;

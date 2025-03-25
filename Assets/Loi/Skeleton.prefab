@@ -262,10 +262,7 @@ MonoBehaviour:
   animator: {fileID: 2058410003384557316}
   damageZone: {fileID: 8703011867475778489}
   heath: {fileID: 1593625732920536247}
-  coinPrefab: {fileID: 7535959374859703660, guid: 08ebab5447869da449de555ea633080a, type: 3}
-  minCoins: 1
-  maxCoins: 5
-  moveSpeed: 5
+  moveSpeed: 10
   currentState: 0
 --- !u!114 &1593625732920536247
 MonoBehaviour:

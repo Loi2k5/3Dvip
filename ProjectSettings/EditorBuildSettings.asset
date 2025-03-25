@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MapPhong2.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/videointro.unity
+    guid: 85fe8bca2ce9821469347242f72085a3
+  - enabled: 1
+    path: Assets/Scenes/End.unity
+    guid: 5b1f56b82e0a27f44ac441ae577928df
   m_configObjects: {}

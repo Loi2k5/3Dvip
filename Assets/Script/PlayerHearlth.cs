@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -8,12 +9,14 @@ public class PlayerHealth : MonoBehaviour
 
     public Animator animator;
     public Slider healthSlider;
+    public GameObject deathPanel; // Thêm biến cho Panel chết
 
     void Start()
     {
         currentHealth = maxHealth;
         healthSlider.maxValue = maxHealth;
         healthSlider.value = currentHealth;
+        deathPanel.SetActive(false); // Ẩn panel chết khi bắt đầu
     }
 
     public void TakeDamage(float amount)
@@ -31,8 +34,16 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         animator.SetBool("isDead", true);
-        // Tạm dừng trò chơi
-        Time.timeScale = 0f;
+        deathPanel.SetActive(true); // Hiển thị panel chết
+        Time.timeScale = 0f; // Dừng game
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit(); // Thoát game
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false; // Dừng trong Editor
+#endif
     }
 
     public float GetCurrentHealth()
