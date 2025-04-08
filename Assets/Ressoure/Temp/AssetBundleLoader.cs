@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using UnityEngine;
 
 public class AssetBundleLoader : MonoBehaviour
@@ -20,3 +20,4 @@ public class AssetBundleLoader : MonoBehaviour
         bundle.Unload(false);
     }
 }
+*/
