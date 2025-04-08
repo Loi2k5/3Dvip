@@ -46,7 +46,7 @@ public class Raycast : MonoBehaviour
         }
     }
 
-    // Thêm phương thức này để có thể gọi từ NewTestScript.cs
+    // Phương thức kiểm tra raycast
     public bool PerformRaycast()
     {
         if (Physics.Raycast(transform.position, transform.forward, out var hit, 5, layerMask))
@@ -70,12 +70,12 @@ public class Raycast : MonoBehaviour
             }
 
             nextRaycastTime = Time.time + cooldownTime;
-            return true; // Trúng mục tiêu
+            return true;
         }
         else
         {
             Debug.DrawRay(transform.position, transform.forward * 5, Color.yellow);
-            return false; // Không trúng mục tiêu
+            return false;
         }
     }
 
@@ -144,5 +144,13 @@ public class Raycast : MonoBehaviour
     void ExitGame()
     {
         Application.Quit();
+    }
+
+    // ✅ HÀM MỚI để test cập nhật và lưu điểm
+    public void AddScore(int amount)
+    {
+        highScore += amount;
+        UpdateHighScoreText();
+        SaveHighScore();
     }
 }
